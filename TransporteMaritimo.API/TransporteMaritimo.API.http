@@ -1,0 +1,6 @@
+@TransporteMaritimo.API_HostAddress = http://localhost:5233
+
+GET {{TransporteMaritimo.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
