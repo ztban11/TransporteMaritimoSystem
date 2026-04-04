@@ -1,9 +1,8 @@
-﻿namespace TransporteMaritimo.API.Models
+﻿namespace TransporteMaritimoSystem.Models
 {
-    public class LoginRequest
+    public class LoginViewModel
     {
         public required string sNombre { get; set; }
-
         public required string sPassword { get; set; }
     }
 }

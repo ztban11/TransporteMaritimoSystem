@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics;
 using TransporteMaritimoSystem.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TransporteMaritimoSystem.Controllers
 {
@@ -8,7 +10,7 @@ namespace TransporteMaritimoSystem.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Dashboard");
         }
 
         public IActionResult Privacy()

@@ -1,19 +1,31 @@
-﻿@{
+﻿@model TransporteMaritimoSystem.Models.LoginViewModel
+
+@{
     ViewData["Title"] = "Login";
 }
 
-<h2>Ingreso al Sistema</h2>
+<h2>Login Sistema Transporte Marítimo</h2>
 
-<form method="post">
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
+
+<form asp-action="Login" method="post">
+
     <div>
-        <label>Email</label>
-        <input type="text" name="Email" />
+        <label>Usuario</label>
+        <input asp-for="sNombre" />
     </div>
 
     <div>
-        <label>Password</label>
-        <input type="password" name="Password" />
+        <label>Contraseña</label>
+        <input asp-for="sPassword" type="password" />
     </div>
+
+    <br />
 
     <button type="submit">Ingresar</button>
+
 </form>
+

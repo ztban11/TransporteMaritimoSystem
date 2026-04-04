@@ -14,10 +14,12 @@ namespace TransporteMaritimo.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly TransporteMaritimoContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(TransporteMaritimoContext context)
+        public AuthController(TransporteMaritimoContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         [HttpPost("login")]
@@ -25,7 +27,7 @@ namespace TransporteMaritimo.API.Controllers
         {
             var user = _context.Usuarios
                 .Include(u => u.Rol)
-                .FirstOrDefault(u => u.sEmail == request.sEmail);
+                .FirstOrDefault(u => u.sNombre == request.sNombre);
 
             if (user == null)
                 return Unauthorized("Usuario no encontrado");
@@ -33,7 +35,9 @@ namespace TransporteMaritimo.API.Controllers
             if (user.sPasswordHash != request.sPassword)
                 return Unauthorized("Password incorrecto");
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SUPER_SECRET_KEY_12345"));
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
+            );
 
             var claims = new[]
             {
@@ -43,8 +47,12 @@ namespace TransporteMaritimo.API.Controllers
             };
 
             var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(2),
+                expires: DateTime.Now.AddMinutes(
+                    Convert.ToDouble(_configuration["Jwt:DurationInMinutes"])
+                ),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
 

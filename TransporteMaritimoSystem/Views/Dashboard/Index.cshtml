@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Panel Naval";
+}
+
+<div class="dashboard-container">
+
+    <h1 class="dashboard-title">
+        ⚓ Sistema de Gestión Marítima
+    </h1>
+
+    <div class="dashboard-grid">
+
+        <a class="dashboard-card" asp-controller="Roles" asp-action="Index">
+            <div class="card-icon">🛡️</div>
+            <div class="card-title">Gestión de Roles</div>
+        </a>
+
+        <a class="dashboard-card" asp-controller="Crew" asp-action="Index">
+            <div class="card-icon">👨‍✈️</div>
+            <div class="card-title">Tripulación</div>
+        </a>
+
+        <a class="dashboard-card" asp-controller="Fleet" asp-action="Index">
+            <div class="card-icon">🚢</div>
+            <div class="card-title">Flota Naval</div>
+        </a>
+
+        <a class="dashboard-card" asp-controller="Maintenance" asp-action="Index">
+            <div class="card-icon">🔧</div>
+            <div class="card-title">Mantenimiento</div>
+        </a>
+
+    </div>
+
+</div>
