@@ -10,10 +10,16 @@
 
         public required string sPasswordHash { get; set; }
 
-        public int iRolId { get; set; }
-
         public bool bActivo { get; set; }
 
-        public Rol? Rol { get; set; }
+        public int? iIntentosFallidos { get; set; }
+
+        public DateTime? dtBloqueadoHasta { get; set; }
+
+        //public int UsuarioId { get; set; }
+        
+        //public required Usuario uUsuario { get; set; }
+
+        public ICollection<UsuarioRol> UsuarioRoles { get; set; } = new List<UsuarioRol>();
     }
 }

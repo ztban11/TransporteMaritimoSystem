@@ -6,6 +6,7 @@ using System.Text;
 using TransporteMaritimo.API.Models;
 using TransporteMaritimo.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using BCrypt.Net;
 
 namespace TransporteMaritimo.API.Controllers
 {
@@ -25,34 +26,65 @@ namespace TransporteMaritimo.API.Controllers
         [HttpPost("login")]
         public IActionResult Login(LoginRequest request)
         {
+            var maxAttempts = _configuration.GetValue<int>("Security:MaxLoginAttempts");
+            var lockoutMinutes = _configuration.GetValue<int>("Security:LockoutMinutes");
+
             var user = _context.Usuarios
-                .Include(u => u.Rol)
-                .FirstOrDefault(u => u.sNombre == request.sNombre);
+    .Include(u => u.UsuarioRoles)
+        .ThenInclude(ur => ur.Rol)
+    .FirstOrDefault(u => u.sNombre == request.sNombre);
 
             if (user == null)
                 return Unauthorized("Usuario no encontrado");
 
-            if (user.sPasswordHash != request.sPassword)
+            if (user.dtBloqueadoHasta != null && user.dtBloqueadoHasta > DateTime.Now)
+                return Unauthorized("Usuario bloqueado temporalmente");
+
+            if (!BCrypt.Net.BCrypt.Verify(request.sPassword, user.sPasswordHash))
+            {
+                user.iIntentosFallidos++;
+
+                if (user.iIntentosFallidos >= maxAttempts)
+                {
+                    user.dtBloqueadoHasta = DateTime.Now.AddMinutes(lockoutMinutes);
+                    user.iIntentosFallidos = 0;
+                }
+
+                _context.SaveChanges();
+
                 return Unauthorized("Password incorrecto");
+            }
+
+            user.iIntentosFallidos = 0;
+            user.dtBloqueadoHasta = null;
+
+            _context.SaveChanges();
+
+            var jwtKey = _configuration["Jwt:Key"]
+                ?? throw new Exception("JWT Key not configured");
 
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
+                Encoding.UTF8.GetBytes(jwtKey)
             );
 
-            var claims = new[]
+            var roles = user.UsuarioRoles
+                .Where(ur => ur.Rol != null)
+                .Select(ur => ur.Rol!.sNombreRol)
+                .ToList();
+
+            var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.Name, user.sNombre)
+};
+
+            foreach (var role in roles)
             {
-                new Claim(ClaimTypes.Name, user.sNombre),
-                new Claim(ClaimTypes.Email, user.sEmail),
-                new Claim(ClaimTypes.Role, user.Rol?.sNombreRol ?? "Usuario")
-            };
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(
-                    Convert.ToDouble(_configuration["Jwt:DurationInMinutes"])
-                ),
+                expires: DateTime.Now.AddHours(2),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
 

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TransporteMaritimo.Core\TransporteMaritimo.Core.csproj" />
+    <ProjectReference Include="..\TransporteMaritimo.Data\TransporteMaritimo.Data.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,60 @@
+﻿@model TransporteMaritimoSystem.Models.EditUserRolesViewModel
+
+<h2>Editar Roles</h2>
+
+<h4>Usuario: @Model.sNombre</h4>
+
+<form asp-action="EditRoles" method="post">
+
+    <input type="hidden" asp-for="iUsuarioId" />
+
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Asignar</th>
+                <th>Rol</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @for (int i = 0; i < Model.Roles.Count; i++)
+            {
+                <tr>
+
+                    <td style="width:120px">
+
+                        <input type="checkbox"
+                               asp-for="Roles[i].bSeleccionada"
+                               class="form-check-input" />
+
+                    </td>
+
+                    <td>
+
+                        @Model.Roles[i].sNombreRol
+
+                    </td>
+
+                    <input type="hidden" asp-for="Roles[i].iRolId" />
+                    <input type="hidden" asp-for="Roles[i].sNombreRol" />
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+    <br />
+
+    <button type="submit" class="btn btn-success">
+        Guardar Cambios
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Regresar
+    </a>
+
+</form>

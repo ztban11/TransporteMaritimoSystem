@@ -3,6 +3,10 @@ using System.Text;
 using System.Text.Json;
 using TransporteMaritimoSystem.Models;
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+
 namespace TransporteMaritimoSystem.Controllers
 {
     public class LoginController : Controller
@@ -42,6 +46,12 @@ namespace TransporteMaritimoSystem.Controllers
                         .GetProperty("token")
                         .GetString();
 
+            if (token == null)
+            {
+                ViewBag.Error = "Error autenticando usuario";
+                return View();
+            }
+
             if (string.IsNullOrEmpty(token))
             {
                 ViewBag.Error = "Error obteniendo token";
@@ -49,7 +59,32 @@ namespace TransporteMaritimoSystem.Controllers
             }
             HttpContext.Session.SetString("JWToken", token);
 
+            // CREATE COOKIE AUTHENTICATION
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, model.sNombre)
+    };
+
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true
+            };
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
+
             return RedirectToAction("Index", "Dashboard");
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
         }
     }
 }

@@ -12,7 +12,10 @@ namespace TransporteMaritimoSystem
             builder.Services.AddControllersWithViews();
 
             // Soporte de sesión (Almacena Token JWT inmediatamente después del login)
-            builder.Services.AddSession();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
 
             // Authentication (COOKIE)
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -21,6 +24,7 @@ namespace TransporteMaritimoSystem
                     options.LoginPath = "/Login/Login";
                 });
 
+            builder.Services.AddHttpClient();
             var app = builder.Build();
 
             // Manejo de Errores
@@ -31,9 +35,7 @@ namespace TransporteMaritimoSystem
             }
 
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
-
             app.UseRouting();
 
             // Habilitar sesiones

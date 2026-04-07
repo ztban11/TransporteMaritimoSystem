@@ -22,6 +22,8 @@ namespace TransporteMaritimo.Data.Context
 
         public DbSet<RolPermiso> RolPermisos { get; set; }
 
+        public DbSet<UsuarioRol> UsuariosRoles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -44,15 +46,14 @@ namespace TransporteMaritimo.Data.Context
                 entity.Property(e => e.sPasswordHash)
                     .HasColumnName("PasswordHash");
 
-                entity.Property(e => e.iRolId)
-                    .HasColumnName("RolId");
-
                 entity.Property(e => e.bActivo)
                     .HasColumnName("Activo");
 
-                entity.HasOne(e => e.Rol)
-                    .WithMany(r => r.Usuarios)
-                    .HasForeignKey(e => e.iRolId);
+                entity.Property(e => e.iIntentosFallidos)
+                    .HasColumnName("IntentosFallidos");
+
+                entity.Property(e => e.dtBloqueadoHasta)
+                    .HasColumnName("BloqueadoHasta");
             });
 
             modelBuilder.Entity<Rol>(entity =>
@@ -97,13 +98,28 @@ namespace TransporteMaritimo.Data.Context
                     .HasColumnName("PermisoId");
             });
 
-            modelBuilder.Entity<Usuario>().HasKey(u => u.iUsuarioId);
+            modelBuilder.Entity<UsuarioRol>(entity =>
+            {
+                entity.ToTable("UsuarioRoles");
 
-            modelBuilder.Entity<Rol>().HasKey(r => r.iRolId);
+                entity.HasKey(ur => new { ur.UsuarioId, ur.RolId });
 
-            modelBuilder.Entity<Permiso>().HasKey(p => p.iPermisoId);
+                entity.Property(ur => ur.UsuarioId)
+                    .HasColumnName("UsuarioId");
 
-            modelBuilder.Entity<RolPermiso>().HasKey(rp => rp.iRolPermisoId);
+                entity.Property(ur => ur.RolId)
+                    .HasColumnName("RolId");
+
+                entity.HasOne(ur => ur.Usuario)
+                    .WithMany(u => u.UsuarioRoles)
+                    .HasForeignKey(ur => ur.UsuarioId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(ur => ur.Rol)
+                    .WithMany(r => r.UsuarioRoles)
+                    .HasForeignKey(ur => ur.RolId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
         }
     }
 }

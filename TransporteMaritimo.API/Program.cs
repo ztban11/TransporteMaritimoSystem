@@ -1,8 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using TransporteMaritimo.Data.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
+using TransporteMaritimo.Data.Context;
+
 
 namespace TransporteMaritimo.API
 {
@@ -12,8 +14,32 @@ namespace TransporteMaritimo.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add Controllers
-            builder.Services.AddControllers();
+            var key = "SUPER_SECRET_KEY_12345";
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                };
+            });
+            builder.Services.AddAuthorization();
+
+            // Agrega Controllers
+            builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
 
             // Swagger / OpenAPI
             builder.Services.AddEndpointsApiExplorer();
@@ -38,26 +64,6 @@ namespace TransporteMaritimo.API
             app.MapControllers();
 
             app.Run();
-
-            var key = "SUPER_SECRET_KEY_12345";
-
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-                };
-            });
-            builder.Services.AddAuthorization();
         }
     }
 }

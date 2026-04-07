@@ -7,9 +7,7 @@
         public required string sNombreRol { get; set; }
 
         public string? Descripcion { get; set; }
-
-        public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
-
+        public ICollection<UsuarioRol> UsuarioRoles { get; set; } = new List<UsuarioRol>();
         public ICollection<RolPermiso> RolPermisos { get; set; } = new List<RolPermiso>();
     }
 }

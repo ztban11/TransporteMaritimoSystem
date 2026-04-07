@@ -1,0 +1,45 @@
+﻿@model IEnumerable<TransporteMaritimoSystem.Models.UsuarioDTO>
+
+@{
+    ViewData["Title"] = "Gestión de Roles";
+}
+
+<h2>Gestión de Roles de Usuarios</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.iUsuarioId</td>
+                <td>@user.sNombre</td>
+                <td>@user.sEmail</td>
+
+                <td>
+                    <a class="btn btn-primary"
+                           asp-controller="Roles"
+                           asp-action="Edit"
+                           asp-route-id="@user.iUsuarioId">
+                        Editar Roles
+                    </a>
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<a asp-controller="Dashboard" asp-action="Index" class="btn btn-secondary">
+    Volver
+</a>
