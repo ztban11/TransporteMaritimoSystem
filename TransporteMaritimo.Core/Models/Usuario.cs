@@ -16,10 +16,6 @@
 
         public DateTime? dtBloqueadoHasta { get; set; }
 
-        //public int UsuarioId { get; set; }
-        
-        //public required Usuario uUsuario { get; set; }
-
         public ICollection<UsuarioRol> UsuarioRoles { get; set; } = new List<UsuarioRol>();
     }
 }

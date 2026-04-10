@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
+using System.IdentityModel.Tokens.Jwt;
+
 namespace TransporteMaritimoSystem.Controllers
 {
     public class LoginController : Controller
@@ -46,27 +48,44 @@ namespace TransporteMaritimoSystem.Controllers
                         .GetProperty("token")
                         .GetString();
 
-            if (token == null)
-            {
-                ViewBag.Error = "Error autenticando usuario";
-                return View();
-            }
-
             if (string.IsNullOrEmpty(token))
             {
                 ViewBag.Error = "Error obteniendo token";
                 return View();
             }
+
+            // Guardar JWT en sesión
             HttpContext.Session.SetString("JWToken", token);
 
-            // CREATE COOKIE AUTHENTICATION
+            // Leer el JWT
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            // Obtener UserId desde el claim
+            var userIdClaim = jwtToken.Claims
+                .FirstOrDefault(c =>
+                    c.Type == ClaimTypes.NameIdentifier ||
+                    c.Type == "nameid" ||
+                    c.Type == "sub");
+
+            var userId = userIdClaim?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                ViewBag.Error = "No se pudo obtener el ID del usuario desde el token.";
+                return View();
+            }
+
+            // Crear Claims para la cookie
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, model.sNombre)
-    };
+            {
+                new Claim(ClaimTypes.Name, model.sNombre),
+                new Claim(ClaimTypes.NameIdentifier, userId)
+            };
 
             var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
 
             var authProperties = new AuthenticationProperties
             {
@@ -81,9 +100,13 @@ namespace TransporteMaritimoSystem.Controllers
             return RedirectToAction("Index", "Dashboard");
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear();
+
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
             return RedirectToAction("Login");
         }
     }

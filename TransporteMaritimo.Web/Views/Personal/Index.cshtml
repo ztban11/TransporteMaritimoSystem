@@ -1,0 +1,33 @@
+﻿@model List<TransporteMaritimo.Core.Models.Personal>
+
+<h2>Personal</h2>
+
+<a asp-action="Create" class="btn btn-primary">
+    Registrar Personal
+</a>
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Identificación</th>
+            <th>Rol</th>
+            <th>Fecha Contratación</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.NombreCompleto</td>
+                <td>@item.Identificacion</td>
+                <td>@item.RolPrimario</td>
+                <td>@item.FechaContratacion</td>
+            </tr>
+        }
+
+    </tbody>
+</table>

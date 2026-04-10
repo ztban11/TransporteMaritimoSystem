@@ -86,7 +86,6 @@ namespace TransporteMaritimoSystem.Controllers
             return View(model);
         }
 
-        // GUARDAR CAMBIOS
         [HttpPost]
         public async Task<IActionResult> EditRoles(EditUserRolesViewModel model)
         {
@@ -99,11 +98,54 @@ namespace TransporteMaritimoSystem.Controllers
 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            await _httpClient.PostAsync(
-                $"api/usuarioroles/{model.iUsuarioId}/roles",
+            // Obtener JWT del login
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+
+            // Obtener AdminId desde las Claims
+            var adminId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(adminId))
+            {
+                Console.WriteLine("No se pudo obtener AdminId del usuario logueado");
+                return RedirectToAction("Index");
+            }
+
+            var response = await _httpClient.PostAsync(
+                $"api/usuarioroles/{adminId}/{model.iUsuarioId}/roles",
                 content);
 
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("ERROR API: " + error);
+            }
+
             return RedirectToAction("Index");
+        }
+
+        // Historial de Cambios de Roles
+        public async Task<IActionResult> Historial()
+        {
+            var response = await _httpClient.GetAsync("api/historialroles");
+
+            if (!response.IsSuccessStatusCode)
+                return View(new List<HistorialRolViewModel>());
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            var historial = JsonSerializer.Deserialize<List<HistorialRolViewModel>>(json,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? new List<HistorialRolViewModel>();
+
+            return View(historial);
         }
     }
 }

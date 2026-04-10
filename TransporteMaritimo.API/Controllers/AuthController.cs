@@ -73,9 +73,10 @@ namespace TransporteMaritimo.API.Controllers
                 .ToList();
 
             var claims = new List<Claim>
-{
-    new Claim(ClaimTypes.Name, user.sNombre)
-};
+            {
+                new Claim(ClaimTypes.Name, user.sNombre),
+                new Claim(ClaimTypes.NameIdentifier, user.iUsuarioId.ToString())
+            };
 
             foreach (var role in roles)
             {

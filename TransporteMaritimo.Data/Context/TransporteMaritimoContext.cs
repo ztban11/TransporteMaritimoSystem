@@ -24,6 +24,17 @@ namespace TransporteMaritimo.Data.Context
 
         public DbSet<UsuarioRol> UsuariosRoles { get; set; }
 
+        public DbSet<HistorialCambiosRol> HistorialCambiosRol { get; set; }
+
+        public DbSet<Personal> Personal { get; set; }
+
+        public DbSet<Licencia> Licencias { get; set; }
+
+        public DbSet<Barco> Barcos { get; set; }
+
+        public DbSet<AsignacionTripulacion> AsignacionesTripulacion { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -120,6 +131,12 @@ namespace TransporteMaritimo.Data.Context
                     .HasForeignKey(ur => ur.RolId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+
+            modelBuilder.Entity<HistorialCambiosRol>()
+        .HasKey(h => h.CambioRolId);
+
+            modelBuilder.Entity<AsignacionTripulacion>()
+        .HasKey(a => a.AsignacionId);
         }
     }
 }

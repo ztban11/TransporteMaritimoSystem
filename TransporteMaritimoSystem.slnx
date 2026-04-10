@@ -3,6 +3,6 @@
   <Project Path="TransporteMaritimo.API/TransporteMaritimo.API.csproj" Id="90aa9a13-08c6-44b2-9f21-e6687ce56ca5" />
   <Project Path="TransporteMaritimo.Core/TransporteMaritimo.Core.csproj" Id="70b005fe-3b16-43ba-9ce2-81720cbe9b60" />
   <Project Path="TransporteMaritimo.Data/TransporteMaritimo.Data.csproj" Id="9cc9fe05-7f84-4883-b521-ecb0b5f121ef" />
-  <Project Path="TransporteMaritimo.Web/TransporteMaritimo.Web.csproj" Id="61dbbdd6-8fce-4246-820a-22f7f6eb68e6" />
+  <Project Path="TransporteMaritimo.Web/TransporteMaritimo.Web.csproj" Id="d0ce40bd-215e-42b4-a973-341be39dbdbf" />
   <Project Path="TransporteMaritimoSystem/TransporteMaritimoSystem.csproj" />
 </Solution>

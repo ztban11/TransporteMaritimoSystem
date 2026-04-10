@@ -1,0 +1,36 @@
+﻿@model List<TransporteMaritimoSystem.Models.HistorialRolViewModel>
+
+<h2>Historial de Cambios de Roles</h2>
+
+<table class="table table-striped">
+
+    <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Rol Anterior</th>
+            <th>Rol Nuevo</th>
+            <th>Modificado Por</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Usuario</td>
+                <td>@item.RolAnterior</td>
+                <td>@item.RolNuevo</td>
+                <td>@item.Administrador</td>
+                <td>@item.FechaCambio</td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<a asp-controller="Roles" asp-action="Index" class="btn btn-secondary">
+    Regresar
+</a>

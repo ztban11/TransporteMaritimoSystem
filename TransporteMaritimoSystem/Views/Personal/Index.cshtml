@@ -1,0 +1,36 @@
+﻿@model List<TransporteMaritimo.Core.Models.Personal>
+
+<h2>Tripulación</h2>
+
+<a class="btn btn-primary mb-3" asp-controller="Personal" asp-action="Create">
+    + Agregar Personal
+</a>
+
+<table class="table table-striped">
+
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Identificación</th>
+            <th>Rol</th>
+            <th>Fecha Contratación</th>
+            <th>Barco Asignado</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.NombreCompleto</td>
+                <td>@p.Identificacion</td>
+                <td>@p.RolPrimario</td>
+                <td>@p.FechaContratacion.ToShortDateString()</td>
+                <td>Sin asignar</td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
