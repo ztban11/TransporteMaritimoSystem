@@ -17,5 +17,7 @@ namespace TransporteMaritimo.Core.Models
         public DateTime FechaContratacion { get; set; }
 
         public bool Activo { get; set; }
+
+        public required ICollection<Licencia> Licencias { get; set; }
     }
 }

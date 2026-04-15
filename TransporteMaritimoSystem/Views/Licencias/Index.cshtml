@@ -1,0 +1,68 @@
+﻿@model List<TransporteMaritimo.Core.Models.Licencia>
+
+<h2>Licencias Marítimas</h2>
+
+<a class="btn btn-primary mb-3"
+       asp-controller="Licencias"
+       asp-action="Create">
+    Registrar Licencia
+</a>
+
+@if (Model.Any(l => (l.FechaExpiracion - DateTime.Now).TotalDays <= 60))
+{
+    <div class="alert alert-danger">
+        ⚠ Existen licencias que vencerán en los próximos 60 días.
+    </div>
+}
+
+<table class="table table-striped">
+
+    <thead>
+        <tr>
+            <th>Personal</th>
+            <th>Tipo Licencia</th>
+            <th>Fecha Expiración</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var l in Model)
+        {
+            var diasRestantes = (l.FechaExpiracion - DateTime.Now).TotalDays;
+
+            <tr>
+
+                <td>@l.PersonalId</td>
+
+                <td>@l.TipoLicencia</td>
+
+                @if (diasRestantes <= 60)
+                {
+                    <td style="color:red;font-weight:bold">
+                        @l.FechaExpiracion.ToShortDateString()
+                    </td>
+
+                    <td style="color:red;font-weight:bold">
+                        ⚠ Próxima a vencer
+                    </td>
+                }
+                else
+                {
+                    <td>@l.FechaExpiracion.ToShortDateString()</td>
+                    <td>Vigente</td>
+                }
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<a asp-controller="Personal"
+       asp-action="Index"
+       class="btn btn-secondary">
+    Regresar
+</a>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TransporteMaritimo.Data.Context;
 using TransporteMaritimo.Core.Models;
 
@@ -18,7 +19,9 @@ namespace TransporteMaritimo.API.Controllers
         [HttpGet]
         public IActionResult GetPersonal()
         {
-            var personal = _context.Personal.ToList();
+            var personal = _context.Personal
+                .Include(p => p.Licencias)
+                .ToList();
 
             return Ok(personal);
         }
@@ -26,12 +29,13 @@ namespace TransporteMaritimo.API.Controllers
         [HttpPost]
         public IActionResult Create(Personal model)
         {
-            // Validar Identificación única
             var exists = _context.Personal
                 .Any(p => p.Identificacion == model.Identificacion);
 
             if (exists)
+            {
                 return BadRequest("Ya existe un personal con esa identificación");
+            }
 
             _context.Personal.Add(model);
 

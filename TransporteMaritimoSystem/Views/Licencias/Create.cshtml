@@ -1,0 +1,52 @@
+﻿@model TransporteMaritimo.Core.Models.Licencia
+
+<h2>Registrar Licencia</h2>
+
+<form asp-action="Create" method="post">
+
+    <div class="mb-3">
+
+        <label class="form-label">Personal ID</label>
+
+        <!-- visible gris -->
+        <input class="form-control"
+               value="@Model.PersonalId"
+               readonly
+               style="background-color:#e9ecef;" />
+
+        <!-- el que realmente se envía -->
+        <input type="hidden"
+               asp-for="PersonalId" />
+
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Tipo de Licencia</label>
+
+        <select class="form-control" asp-for="TipoLicencia">
+
+            <option>Navegación (hasta 6m)</option>
+            <option>PNB (hasta 8m)</option>
+            <option>PER (hasta 15m)</option>
+            <option>Patrón de Yate (hasta 24m)</option>
+            <option>Capitán de Yate (sin límite)</option>
+
+        </select>
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Fecha Expiración</label>
+
+        <input asp-for="FechaExpiracion"
+               type="date"
+               class="form-control" />
+
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        Guardar
+    </button>
+
+</form>

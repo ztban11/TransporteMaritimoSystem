@@ -1,8 +1,16 @@
 ﻿@model List<TransporteMaritimo.Core.Models.Personal>
 
+@using TransporteMaritimo.Core.Models
+
+@{
+    var licencias = ViewBag.Licencias as List<Licencia> ?? new List<Licencia>();
+}
+
 <h2>Tripulación</h2>
 
-<a class="btn btn-primary mb-3" asp-controller="Personal" asp-action="Create">
+<a class="btn btn-primary mb-3"
+       asp-controller="Personal"
+       asp-action="Create">
     + Agregar Personal
 </a>
 
@@ -15,6 +23,8 @@
             <th>Rol</th>
             <th>Fecha Contratación</th>
             <th>Barco Asignado</th>
+            <th>Licencias</th>
+            <th>Acción</th>
         </tr>
     </thead>
 
@@ -22,15 +32,68 @@
 
         @foreach (var p in Model)
         {
+            var licencia = licencias.FirstOrDefault(l => l.PersonalId == p.PersonalId);
+
             <tr>
+
                 <td>@p.NombreCompleto</td>
                 <td>@p.Identificacion</td>
                 <td>@p.RolPrimario</td>
                 <td>@p.FechaContratacion.ToShortDateString()</td>
                 <td>Sin asignar</td>
+
+                <td>
+
+                    @if (licencia == null)
+                    {
+                        <span class="text-danger">Sin licencia</span>
+                    }
+                    else
+                    {
+                        var dias = (licencia.FechaExpiracion - DateTime.Now).TotalDays;
+
+                        if (dias <= 0)
+                        {
+                            <span class="text-danger">
+                                Licencia vencida
+                            </span>
+                        }
+                        else if (dias <= 60)
+                        {
+                            <span class="text-warning">
+                                ⚠ @licencia.TipoLicencia
+                                (vence @licencia.FechaExpiracion.ToShortDateString())
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-success">
+                                @licencia.TipoLicencia
+                                (vence @licencia.FechaExpiracion.ToShortDateString())
+                            </span>
+                        }
+                    }
+
+                </td>
+
+                <td>
+                    <a class="btn btn-sm btn-warning"
+                           asp-controller="Licencias"
+                           asp-action="Create"
+                           asp-route-iElPersonalId="@p.PersonalId">
+                        Registrar Licencia
+                    </a>
+                </td>
+
             </tr>
         }
 
     </tbody>
 
 </table>
+
+<a asp-controller="Dashboard"
+       asp-action="Index"
+       class="btn btn-secondary">
+    Volver
+</a>

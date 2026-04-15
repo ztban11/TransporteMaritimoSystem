@@ -16,18 +16,38 @@ namespace TransporteMaritimoSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var response = await _httpClient.GetAsync("api/personal");
+            // Obtener Personal
+            var responsePersonal = await _httpClient.GetAsync("api/personal");
 
-            if (!response.IsSuccessStatusCode)
+            if (!responsePersonal.IsSuccessStatusCode)
                 return View(new List<Personal>());
 
-            var json = await response.Content.ReadAsStringAsync();
+            var jsonPersonal = await responsePersonal.Content.ReadAsStringAsync();
 
-            var personal = JsonSerializer.Deserialize<List<Personal>>(json,
+            var personal = JsonSerializer.Deserialize<List<Personal>>(jsonPersonal,
                 new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 }) ?? new List<Personal>();
+
+
+            // Obtener Licencias
+            var responseLicencias = await _httpClient.GetAsync("api/licencias");
+
+            List<Licencia> licencias = new();
+
+            if (responseLicencias.IsSuccessStatusCode)
+            {
+                var jsonLicencias = await responseLicencias.Content.ReadAsStringAsync();
+
+                licencias = JsonSerializer.Deserialize<List<Licencia>>(jsonLicencias,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    }) ?? new List<Licencia>();
+            }
+
+            ViewBag.Licencias = licencias;
 
             return View(personal);
         }
@@ -42,7 +62,9 @@ namespace TransporteMaritimoSystem.Controllers
         {
             var json = JsonSerializer.Serialize(model);
 
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var content = new StringContent(json,
+                System.Text.Encoding.UTF8,
+                "application/json");
 
             var response = await _httpClient.PostAsync("api/personal", content);
 
