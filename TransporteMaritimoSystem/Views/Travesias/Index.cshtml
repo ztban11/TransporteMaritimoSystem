@@ -1,0 +1,88 @@
+﻿@model List<TransporteMaritimo.Core.Models.Travesia>
+
+<h2>Travesías</h2>
+
+<a asp-action="Create" class="btn btn-primary">Nueva Travesía</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Barco</th>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th>Salida</th>
+            <th>Llegada</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.BarcoId</td>
+                <td>@t.PuertoOrigen</td>
+                <td>@t.PuertoDestino</td>
+                <td>@t.FechaSalidaPrevista</td>
+                <td>@t.FechaLlegadaPrevista</td>
+
+                <td>
+                    <select class="form-control estado-select" data-id="@t.TravesiaId">
+
+                        <option value="Planeada" selected="@(t.Estado == "Planeada")">
+                            Planeada
+                        </option>
+
+                        <option value="En Curso" selected="@(t.Estado == "En Curso")">
+                            En Curso
+                        </option>
+
+                        <option value="Completada" selected="@(t.Estado == "Completada")">
+                            Completada
+                        </option>
+
+                        <option value="Cancelada" selected="@(t.Estado == "Cancelada")">
+                            Cancelada
+                        </option>
+
+                    </select>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>
+
+    document.querySelectorAll(".estado-select").forEach(select => {
+
+        select.addEventListener("change", function(){
+
+            var travesiaId = this.dataset.id;
+            var estado = this.value;
+
+            fetch("/Travesias/CambiarEstado", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    travesiaId: travesiaId,
+                    estado: estado
+                })
+            })
+            .then(r => {
+                if(!r.ok)
+                {
+                    alert("No se pudo cambiar el estado.");
+                    location.reload();
+                }
+            });
+
+        });
+
+    });
+
+</script>

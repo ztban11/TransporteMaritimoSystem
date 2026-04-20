@@ -1,0 +1,39 @@
+﻿@model List<TransporteMaritimo.Core.Models.OrdenServicio>
+
+<h2>Órdenes de Servicio</h2>
+
+<a asp-action="Create" class="btn btn-primary">
+    Ingresar Solicitud
+</a>
+
+<br />
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Barco</th>
+            <th>Tipo</th>
+            <th>Prioridad</th>
+            <th>Descripción</th>
+            <th>Fecha Límite</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td>@o.OrdenId</td>
+                <td>@o.NombreBarco</td>
+                <td>@o.TipoMantenimiento</td>
+                <td>@o.Prioridad</td>
+                <td>@o.Descripcion</td>
+                <td>@o.FechaLimite</td>
+                <td>@o.Estado</td>
+            </tr>
+        }
+    </tbody>
+</table>

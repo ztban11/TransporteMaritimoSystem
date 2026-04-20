@@ -1,0 +1,113 @@
+﻿@model TransporteMaritimo.Core.Models.Travesia
+
+<h2>Crear Travesía</h2>
+
+<form asp-action="Create" method="post">
+
+    <div class="form-group">
+        <label>Barco</label>
+        <select asp-for="BarcoId" class="form-control">
+            @foreach (var barco in ViewBag.Barcos)
+            {
+                <option value="@barco.BarcoId">@barco.NombreBarco</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Puerto Origen</label>
+        <select asp-for="PuertoOrigen" class="form-control" required>
+
+            <option value="">Seleccionar Puerto</option>
+
+            <option>Puerto Limón</option>
+            <option>Puerto Moín</option>
+            <option>Puerto Caldera</option>
+
+            <option>Puerto Balboa</option>
+            <option>Puerto Cristóbal</option>
+            <option>Manzanillo International Terminal</option>
+
+            <option>Puerto Quetzal</option>
+            <option>Santo Tomás de Castilla</option>
+
+            <option>Puerto Cortés</option>
+            <option>Puerto Acajutla</option>
+            <option>Puerto Corinto</option>
+
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Puerto Destino</label>
+        <select asp-for="PuertoDestino" class="form-control" required>
+
+            <option value="">Seleccione Puerto</option>
+
+            <option>Puerto Limón</option>
+            <option>Puerto Moín</option>
+            <option>Puerto Caldera</option>
+
+            <option>Puerto Balboa</option>
+            <option>Puerto Cristóbal</option>
+            <option>Manzanillo International Terminal</option>
+
+            <option>Puerto Quetzal</option>
+            <option>Santo Tomás de Castilla</option>
+
+            <option>Puerto Cortés</option>
+            <option>Puerto Acajutla</option>
+            <option>Puerto Corinto</option>
+
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Fecha Salida Prevista</label>
+        <input asp-for="FechaSalidaPrevista" type="datetime-local" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Fecha Llegada Prevista</label>
+        <input asp-for="FechaLlegadaPrevista" type="datetime-local" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Estado</label>
+        <select asp-for="Estado" class="form-control">
+            <option value="Planeada">Planeada</option>
+            <option value="En Curso">En Curso</option>
+            <option value="Completada">Completada</option>
+            <option value="Cancelada">Cancelada</option>
+        </select>
+    </div>
+
+    <br />
+
+    <div id="mensajeError" class="alert alert-danger" style="display:none;">
+        El puerto de origen y destino no pueden ser iguales.
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Crear Travesía
+    </button>
+
+</form>
+
+
+<script>
+
+    document.querySelector("form").addEventListener("submit", function(e){
+
+        var origen = document.querySelector("[name='PuertoOrigen']").value;
+        var destino = document.querySelector("[name='PuertoDestino']").value;
+
+        if(origen === destino)
+        {
+            e.preventDefault();
+            document.getElementById("mensajeError").style.display = "block";
+        }
+
+    });
+
+</script>

@@ -1,0 +1,55 @@
+﻿@model List<TransporteMaritimo.Core.Models.Barco>
+
+<h2>Flota de Embarcaciones</h2>
+
+<a class="btn btn-primary mb-3"
+       asp-controller="Barcos"
+       asp-action="Create">
+    + Registrar Barco
+</a>
+
+<table class="table table-striped">
+
+    <thead>
+        <tr>
+
+            <th>Nombre</th>
+            <th>Matrícula</th>
+            <th>Tipo</th>
+            <th>Capacidad</th>
+            <th>Puerto Base</th>
+            <th>Estado</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var b in Model)
+        {
+            <tr>
+
+                <td>@b.NombreBarco</td>
+                <td>@b.Matricula</td>
+                <td>@b.Tipo</td>
+                <td>@b.CapacidadCarga</td>
+                <td>@b.PuertoBase</td>
+
+                <td>
+
+                    @if (b.Activo)
+                    {
+                        <span class="badge bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Archivado</span>
+                    }
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+</table>

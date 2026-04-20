@@ -1,0 +1,62 @@
+﻿@model TransporteMaritimo.Core.Models.Barco
+
+<h2>Registrar Embarcación</h2>
+
+<form asp-action="Create" method="post">
+
+    <div class="mb-3">
+        <label>Nombre del Barco</label>
+        <input asp-for="NombreBarco" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Matrícula</label>
+        <input asp-for="Matricula" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Tipo</label>
+        <input asp-for="Tipo" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Capacidad de Carga (Toneladas)</label>
+        <input asp-for="CapacidadCarga" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Puerto Base</label>
+        <input asp-for="PuertoBase" class="form-control" required />
+    </div>
+
+    <hr />
+
+    <h4>Motor</h4>
+
+    <div class="mb-3">
+        <label>Modelo</label>
+        <input asp-for="ModeloMotor" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Potencia (HP)</label>
+        <input asp-for="PotenciaHP" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Horas de Uso</label>
+        <input asp-for="HorasUso" class="form-control" required />
+    </div>
+
+    <button class="btn btn-success">
+        Guardar
+    </button>
+
+</form>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger mt-3">
+        @ViewBag.Error
+    </div>
+}
