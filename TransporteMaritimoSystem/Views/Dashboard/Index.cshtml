@@ -2,6 +2,8 @@
     ViewData["Title"] = "Panel Naval";
 }
 
+@using TransporteMaritimoSystem.Helpers;
+
 <div class="dashboard-container">
 
     <h1 class="dashboard-title">
@@ -15,10 +17,14 @@
             <div class="card-title">Gestión de Roles</div>
         </a>
 
+        
+@if (PermissionHelper.TieneRol(Context, "Administrador"))
+{
         <a class="dashboard-card" asp-controller="Personal" asp-action="Index">
             <div class="card-icon">👨‍✈️</div>
             <div class="card-title">Tripulación</div>
         </a>
+        }
 
         <a class="dashboard-card" asp-controller="Barcos" asp-action="Index">
             <div class="card-icon">🚢</div>

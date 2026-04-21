@@ -62,31 +62,40 @@ namespace TransporteMaritimoSystem.Controllers
             var jwtToken = handler.ReadJwtToken(token);
 
             // Obtener UserId desde el claim
-            var userIdClaim = jwtToken.Claims
-                .FirstOrDefault(c =>
-                    c.Type == ClaimTypes.NameIdentifier ||
-                    c.Type == "nameid" ||
-                    c.Type == "sub");
 
-            var userId = userIdClaim?.Value;
+            // Extraer roles desde el JWT
+            var roles = jwtToken.Claims
+                .Where(c =>
+                    c.Type == ClaimTypes.Role ||
+                    c.Type == "role" ||
+                    c.Type == "roles")
+                .Select(c => c.Value)
+                .ToList();
 
-            if (string.IsNullOrEmpty(userId))
-            {
-                ViewBag.Error = "No se pudo obtener el ID del usuario desde el token.";
-                return View();
-            }
+            // Guardar roles en Session
+            HttpContext.Session.SetString(
+                "Roles",
+                JsonSerializer.Serialize(roles));
 
-            // Crear Claims para la cookie
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, model.sNombre),
-                new Claim(ClaimTypes.NameIdentifier, userId)
-            };
+            /*   var userId = userIdClaim?.Value;
+
+               if (string.IsNullOrEmpty(userId))
+               {
+                   ViewBag.Error = "No se pudo obtener el ID del usuario desde el token.";
+                   return View();
+               }
+
+               // Crear Claims para la cookie
+               var claims = new List<Claim>
+               {
+                   new Claim(ClaimTypes.Name, model.sNombre),
+                   new Claim(ClaimTypes.NameIdentifier, userId)
+               }; 
 
             var claimsIdentity = new ClaimsIdentity(
                 claims,
                 CookieAuthenticationDefaults.AuthenticationScheme);
-
+            
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true
@@ -96,7 +105,7 @@ namespace TransporteMaritimoSystem.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-
+            */
             return RedirectToAction("Index", "Dashboard");
         }
 
